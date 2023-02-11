@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0;
+        background-color: lightgray;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: row;
+      }
+
+      .button {
+        padding: 10px 20px;
+        margin: 10px;
+        background-color: white;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="buttons"></div>
+    </div>
+    <script>
+      async function fetchData() {
+        const response = await fetch("http://localhost:5000/get-inputs");
+        const data = await response.json();
+        return data;
+      }
+
+      async function sendRequest(name) {
+        const response = await fetch(`http://localhost:5000/buttons/${name}`);
+        const data = await response.json();
+        console.log(data);
+      }
+
+      function displayButtons() {
+        fetchData().then((data) => {
+          const buttonsContainer = document.querySelector("#buttons");
+          buttonsContainer.innerHTML = "";
+          data.names.forEach((name) => {
+            const button = document.createElement("button");
+            button.classList.add("button");
+            button.innerHTML = name;
+            button.addEventListener("click", () => sendRequest(name));
+            buttonsContainer.appendChild(button);
+          });
+
+          document.body.style.backgroundImage = `url(http://localhost:5000/images/${
+            data.background
+          })`;
+        });
+      }
+
+      displayButtons();
+      setInterval(displayButtons, 2000);
+    </script>
+  </body>
+</html>
