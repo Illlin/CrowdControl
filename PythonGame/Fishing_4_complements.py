@@ -25,4 +25,5 @@ insults = [
     "You look like a naked mole rat.",
     "When I saw you I threw up in my mouth a little.",
     "You look great! I couldn't even recognize you!",
+    "You have a great face for radio."
 ]
