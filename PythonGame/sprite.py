@@ -95,6 +95,9 @@ class Sprite():
     def set_pos(self, pos):
         self.position = pos
 
+    def set_pos_center(self, pos):
+        self.position = pos[0] - self.size[0]/2, pos[1] - self.size[1]/2
+
     def draw(self):
         if not self.hidden:
             pyray.draw_texture_rec(

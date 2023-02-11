@@ -1,6 +1,6 @@
 import pyray
 from sprite import Sprite, Timer
-import test
+import Doctor_Deflector
 import threading
 import random
 import requests
@@ -66,4 +66,4 @@ if __name__ == "__main__":
         pyray.ConfigFlags.FLAG_VSYNC_HINT )
 
     pyray.init_window(*screen_size, "CubeWorld")
-    test.main(screen_size)
+    Doctor_Deflector.main(screen_size)
