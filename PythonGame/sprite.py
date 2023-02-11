@@ -77,14 +77,14 @@ class Sprite():
 
             dir = np.array(self.goal) - np.array(self.floatPosition)
             mag = np.sqrt(sum(i**2 for i in dir))
-            if mag <= self.move_speed:
+            if mag <= self.move_speed*delta:
                 self.floatPosition = [float(self.goal[0]), float(self.goal[1])]
                 self.position = self.goal
                 return
             
             dir = dir / mag
 
-            add = dir * self.move_speed
+            add = dir * self.move_speed*delta
             self.floatPosition = [x for x in add + self.floatPosition]
             self.position = [int(x) for x in add + self.floatPosition]
 
