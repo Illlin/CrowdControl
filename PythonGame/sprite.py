@@ -105,7 +105,7 @@ class Sprite():
             )
 
     def get_rect(self):
-        pyray.Rectangle(*self.position,*self.size)
+        return pyray.Rectangle(*self.position,*self.size)
 
     def get_collision(self, other):
-        pyray.get_collision_rec(self.get_rect(), other.get_rect())
+        return pyray.get_collision_rec(self.get_rect(), other.get_rect())
