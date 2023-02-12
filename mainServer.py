@@ -17,14 +17,11 @@ class HTTPServerRequestHandler(BaseHTTPRequestHandler):
             request_data = json.loads(request_body)
             if request_data["password"] == password:
                 if "names" in request_data:
-                    global inps
                     inps = request_data
-                    global hits
-                    global users
-                    hits = {}
+                    for x in hits:
+                        del hits[x]
                     for x in inps["names"]:
                         hits[x] = 0
-                    users = {}
 
                     print("UPDATES INPS ----------------------")
                 print(request_data)
