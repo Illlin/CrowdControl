@@ -2,13 +2,20 @@ import pyray
 from sprite import Sprite, Timer, DrawMode
 
 INPUTS = ["UP", "DOWN", "LEFT", "RIGHT"]
+PHONE_BACKGROUN = "background.png"
+BUTTON_POS = [[10,10],[10,30],[5,20],[15,20]]
+
+def main(screen_size, inp): # Game stuff here
+    u = 0
+    d = 0
+    l = 0
+    r = 0
 
 
-def main(screen_size): # Game stuff here
     # Init the sprite, Framerate, File location, Position, number of frames
     background = pyray.load_texture("PythonGame/Assets/background.png")
 
-    man = Sprite(5, "PythonGame/Assets/man.png", [128,128],2)
+    man = Sprite(5, "PythonGame/Assets/AppleSmall.png", [128,128],2)
     gun = Sprite(5, "PythonGame/Assets/gun.png", [128,128],2)
     # Add all sprites to array for easy updating
     sprites = [man, gun]
@@ -70,19 +77,24 @@ def main(screen_size): # Game stuff here
 
                 ## GET NETWORK STUFF
                 # Up
-                if pyray.is_key_pressed(pyray.KeyboardKey.KEY_UP):
+                buttons = inp.get_inputs_sum()
+                while buttons["UP"] >= u:
+                    u += 1
                     gun.position[1] -= 10
 
                 # Down
-                if pyray.is_key_pressed(pyray.KeyboardKey.KEY_DOWN):
+                while buttons["DOWN"] >= d:
+                    d += 1
                     gun.position[1] += 10
                 
                 # Left
-                if pyray.is_key_pressed(pyray.KeyboardKey.KEY_LEFT):
+                while buttons["LEFT"] >= l:
+                    l += 1
                     gun.position[0] -= 10
                 
                 # Right
-                if pyray.is_key_pressed(pyray.KeyboardKey.KEY_RIGHT):
+                while buttons["RIGHT"] >= r:
+                    r += 1
                     gun.position[0] += 10
 
             # Ending

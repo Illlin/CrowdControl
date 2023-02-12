@@ -1,9 +1,11 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
-passord = "FishBiscuitsAreFish"
+password = "FishBiscuitsAreFish"
 
 inps = {"names":["Up","Down","Left","Right"], "background":"background.png"}
+hits = {"Up":0, "Down": 0, "Left": 0, "Right": 0}
+users = {}
 
 # HTTPRequestHandler class
 class HTTPServerRequestHandler(BaseHTTPRequestHandler):
@@ -17,6 +19,13 @@ class HTTPServerRequestHandler(BaseHTTPRequestHandler):
                 if "names" in request_data:
                     global inps
                     inps = request_data
+                    global hits
+                    global users
+                    hits = {}
+                    for x in inps["names"]:
+                        hits[x] = 0
+                    users = {}
+
                     print("UPDATES INPS ----------------------")
                 print(request_data)
                 self.send_response(200, {"message": "Success"})
@@ -52,10 +61,28 @@ class HTTPServerRequestHandler(BaseHTTPRequestHandler):
             print(a)
             self.wfile.write(a.encode("utf-8"))
 
-        elif "button/" in location:
-            button = location[7:]
+        elif location == "get-buttons":
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            send = {}
+            send["hits"] = hits
+            send["users"] = users
+            a = json.dumps(send)
+            print(a)
+            self.wfile.write(a.encode("utf-8"))
+
+        elif "buttons/" in location:
+            button = location[8:]
+            button, user = button.split("/")
+            users[user] = button
+
+            hits[button] += 1
+
             print(f"GOT BUTTON --- {button}")
             self.send_response(200)
+
+            print(users)
 
             # Send headers
             self.send_header('Content-type', 'text/html')
