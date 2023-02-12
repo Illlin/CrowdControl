@@ -1,7 +1,10 @@
 import pyray
 from sprite import Sprite, Timer, DrawMode
+import math
+import time
 
 INPUTS = ["BUY", "SELL"]
+PHONE_BACKGROUN = "background.png"
 
 
 def main(screen_size, inp): # Game stuff here
@@ -10,10 +13,12 @@ def main(screen_size, inp): # Game stuff here
 
     stonks = Sprite(5, "PythonGame/Assets/stonks.png", [0,0],1)
     cover = Sprite(5, "PythonGame/Assets/blue_rectangle.png", [220,-97],1)
-    cover.move_speed = 150
-    moon_man = Sprite(5, "PythonGame/Assets/moon_man.png", [0,0],2)
+    cover.move_speed = 95
+    moon_body = Sprite(5, "PythonGame/Assets/Moon_body.png", [1300,600],2)
+    moon_head = Sprite(5, "PythonGame/Assets/Moon_head.png", [1540,630],2)
+    moon_head.offset = (moon_head.size[0]*moon_head.scale)*0.5,(moon_head.size[1]*moon_head.scale)*0.8
     # Add all sprites to array for easy updating
-    sprites = [stonks, cover, moon_man]
+    sprites = [stonks, cover, moon_body, moon_head]
     
     # Timers are used instead of sleep
     # Control Timers
@@ -22,7 +27,7 @@ def main(screen_size, inp): # Game stuff here
     end_timer = Timer(1)
 
     # Game Timers
-    t1, t2, t3, t4, t5 = Timer(1.8), Timer(1.5), Timer(2), Timer(2), Timer(2.6)
+    t1, t2, t3, t4, t5 = Timer(1.8), Timer(3.3), Timer(5.4), Timer(7.3), Timer(9.9)
     timers = [intro_timer, main_timer, end_timer, t1, t2, t3, t4, t5]
 
     # Start the main game timer
@@ -32,6 +37,7 @@ def main(screen_size, inp): # Game stuff here
 
     # Main game loop
     while not pyray.window_should_close():
+        moon_head.rotation = 30*math.sin(time.time()*3)
         # Time in s since last frame
         delta = pyray.get_frame_time()
 
@@ -55,16 +61,21 @@ def main(screen_size, inp): # Game stuff here
                 main_timer.start()
                 win = True
                 t1.start()
+                t2.start()
+                t3.start()
+                t4.start()
+                t5.start()
                 for sprite in sprites:
                     sprite.show()
                 cover.goal = [10000, -97]
                 buy = None
+                start_time = time.time()
 
             # Main game stuff here
             if main_timer.running:
-                if pyray.is_key_pressed(pyray.KeyboardKey.KEY_DOWN):
+                if inp.get_top() == "BUY" or pyray.is_key_pressed(pyray.KeyboardKey.KEY_DOWN):
                     buy = False
-                elif pyray.is_key_pressed(pyray.KeyboardKey.KEY_UP):
+                elif inp.get_top() == "SELL" or pyray.is_key_pressed(pyray.KeyboardKey.KEY_UP):
                     buy = True
                 
                 if t1.running and t1.done():
@@ -116,7 +127,7 @@ def main(screen_size, inp): # Game stuff here
             
             # Return to next Game
             if end_timer.done():
-                return False # return win or lose so music can play
+                return win # return win or lose so music can play
 
 
             # Each frame, Render and update each sprite and timers

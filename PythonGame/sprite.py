@@ -42,7 +42,7 @@ class Sprite():
         self.texture = texture
         self.position = position[::]
         self.floatPosition = [float(position[0]), float(position[1])]
-
+        self.offset = (0,0)
         self.current_frame = 0
         self.max_frame = frames
         self.time = 0
@@ -76,7 +76,7 @@ class Sprite():
         self.next_frame(no=frames)
 
         if self.move_speed != 0:
-
+            self.floatPosition = [float(self.position[0]), float(self.position[1])]
             dir = np.array(self.goal) - np.array(self.floatPosition)
             mag = np.sqrt(sum(i**2 for i in dir))
             if mag <= self.move_speed*delta:
@@ -110,7 +110,7 @@ class Sprite():
                 self.texture,
                 self.frameRec,
                 dest,
-                (0,0),
+                self.offset,
                 self.rotation,
                 pyray.WHITE
             )
@@ -119,4 +119,4 @@ class Sprite():
         return pyray.Rectangle(*self.position,self.size[0]*self.scale, self.size[1]*self.scale)
 
     def get_collision(self, other):
-        return pyray.get_collision_rec(self.get_rect(), other.get_rect())
+        return pyray.check_collision_recs(self.get_rect(), other.get_rect())

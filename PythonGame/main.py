@@ -2,12 +2,15 @@ import pyray
 from sprite import Sprite, Timer
 import Doctor_Deflector
 import To_The_Moon
+import menu
 import test
 import threading
 import requests
 import json
 import time
 import basic_pong
+import score
+import random
 
 password = "FishBiscuitsAreFish"
 
@@ -49,7 +52,6 @@ class Inputs:
     def get_inputs_1per(self):
         buttons = {}
         for i in self.data["users"]:
-            print(self.data["users"][i])
             if self.data["users"][i] in buttons:
                 buttons[self.data["users"][i]] += 1
             else:
@@ -73,8 +75,6 @@ class Inputs:
 def run():
     while True:
         a.update_inputs()
-        #print(a.get_inputs_sum())
-        #print(a.get_top())
         time.sleep(0.1)
 
 
@@ -82,6 +82,7 @@ a = Inputs()
 
 
 if __name__ == "__main__":
+    c_score = 0
     getter = threading.Thread(target=run)
     getter.start()
     screen_size = [1920,1080]
@@ -90,6 +91,14 @@ if __name__ == "__main__":
         pyray.ConfigFlags.FLAG_VSYNC_HINT )
 
     pyray.init_window(*screen_size, "CubeWorld")
-    a.set_inputs(Doctor_Deflector.INPUTS, test.BUTTON_POS, Doctor_Deflector.PHONE_BACKGROUN)
-    Doctor_Deflector.main(screen_size,a)
-
+    a.set_inputs(menu.INPUTS, test.BUTTON_POS, menu.PHONE_BACKGROUN)
+    menu.main(screen_size,a)
+    while True:
+        b = random.choice([1,2])
+        if b == 1:
+            a.set_inputs(To_The_Moon.INPUTS, test.BUTTON_POS, To_The_Moon.PHONE_BACKGROUN)
+            c_score += To_The_Moon.main(screen_size,a)
+        if b == 2:
+            a.set_inputs(Doctor_Deflector.INPUTS, test.BUTTON_POS, Doctor_Deflector.PHONE_BACKGROUN)
+            c_score += Doctor_Deflector.main(screen_size,a)
+        score.main(screen_size,a,c_score)

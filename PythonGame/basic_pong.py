@@ -56,7 +56,7 @@ def main(screen_size): # Game stuff here
                 ball_timer.start()
                 paddle.show()
                 ball.show()
-                ball.position = [screen_size[0], random.randint(0, screen_size[1]-ball.size[1])]
+                ball.set_pos([screen_size[0], random.randint(0, screen_size[1]-ball.size[1])])
                 ball.goal = [-screen_size[0], ball.position[1]]
 
             # Main game stuff here

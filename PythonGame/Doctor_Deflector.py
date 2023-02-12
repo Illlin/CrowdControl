@@ -10,8 +10,8 @@ def main(screen_size, inp): # Game stuff here
     # Init the sprite, Framerate, File location, Position, number of frames
     background = pyray.load_texture("PythonGame/Assets/reception_bg.png")
 
-    man_right = Sprite(5, "PythonGame/Assets/man_right.png", [-100,-100],1)
-    man_left = Sprite(5, "PythonGame/Assets/man_left.png", [-100,-100],1)
+    man_right = Sprite(5, "PythonGame/Assets/man_right.png", [-100,-100],2)
+    man_left = Sprite(5, "PythonGame/Assets/man_left.png", [-100,-100],2)
 
     apple = Sprite(5, "PythonGame/Assets/AppleSmall.png", [-100,-100],2)
     apple.scale = 0.5
@@ -58,7 +58,7 @@ def main(screen_size, inp): # Game stuff here
                 for sprite in man_sprites:
                     sprite.hide()
         
-                pyray.draw_text("THE EVIL DRS WANT YOUR LUNGS!!!!!",10,10,50,pyray.RED)
+                pyray.draw_text("Keep the doctors at bay!",600,500,50,pyray.RED)
             
             # Start the game
             if intro_timer.done() and intro_timer.running:
@@ -66,8 +66,13 @@ def main(screen_size, inp): # Game stuff here
                 intro_timer.stop()
                 main_timer.start()
                 man_right.show()
+                man_left.set_pos_center([screen_size[0]/2, screen_size[1]/2])
+                man_right.set_pos_center([screen_size[0]/2, screen_size[1]/2])
+                apple.set_pos_center([screen_size[0]/2 + apple_offset, screen_size[1]/2])
                 doc_1.set_pos_center(start_pos_1)
                 doc_2.set_pos_center(start_pos_2)
+                doc_1.set_goal_center([screen_size[0]/2, screen_size[1]/2])
+                doc_2.set_goal_center([screen_size[0]/2, screen_size[1]/2])
                 print(doc_1.position)
 
             # Main game stuff here
@@ -81,7 +86,7 @@ def main(screen_size, inp): # Game stuff here
                         start_pos_1 = random.choice(starting_pos_list)
                         doc_1.set_pos_center(start_pos_1)
                         doc_1.move_speed = 500
-                        doc_1.set_goal_center = [screen_size[0]/2, screen_size[1]/2]
+                        doc_1.set_goal_center([screen_size[0]/2, screen_size[1]/2])
                         doc_1.show()
                         doc_choice = 2
 
@@ -89,7 +94,7 @@ def main(screen_size, inp): # Game stuff here
                         start_pos_2 = random.choice(starting_pos_list)
                         doc_2.set_pos_center(start_pos_2)
                         doc_2.move_speed = 500
-                        doc_2.set_goal_center = [screen_size[0]/2, screen_size[1]/2]
+                        doc_2.set_goal_center([screen_size[0]/2, screen_size[1]/2])
                         doc_2.show()
                         doc_choice = 1
                 
@@ -108,11 +113,11 @@ def main(screen_size, inp): # Game stuff here
                     apple.set_pos_center([screen_size[0]/2 + apple_offset, screen_size[1]/2])
                 
                 if doc_1.get_collision(apple):
-                    doc_1.position = start_pos_1[::]
+                    doc_1.goal = start_pos_1[::]
                     doc_1.move_speed = 100
                 
                 elif doc_2.get_collision(apple):
-                    doc_2.position = start_pos_2[::]
+                    doc_2.goal = start_pos_2[::]
                     doc_2.move_speed = 100
                 
                 else:
@@ -129,13 +134,13 @@ def main(screen_size, inp): # Game stuff here
                     sprite.hide()
 
                 if win:
-                    pyray.draw_text("You won a fish",10,10,80,pyray.RED)
+                    pyray.draw_text("You won a fish",650,500,80,pyray.RED)
                 else:
-                    pyray.draw_text("You lose a fish :(",10,10,80,pyray.RED)
+                    pyray.draw_text("You lose a fish :(",600,500,80,pyray.RED)
 
             # Return to next Game
             if end_timer.done():
-                return False # return win or lose so music can play
+                return win # return win or lose so music can play
 
 
             # Each frame, Render and update each sprite and timers
