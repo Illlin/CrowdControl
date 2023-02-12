@@ -1,15 +1,15 @@
 import pyray
-from sprite import Sprite, Timer
 import test
+
 import threading
-import random
 import requests
 import json
+import time
 
 password = "FishBiscuitsAreFish"
 
-server_get = "127.0.0.1:5000/inputs"
-server_set = "127.0.0.1:5000/set_inputs"
+server_get = "http://www.localhost:5000/get-buttons"
+server_set = "http://www.localhost:5000/"
 
 class Inputs:
     def __init__(self):
@@ -18,20 +18,20 @@ class Inputs:
     def read(self):
         return self.inputs
 
-    def set_inputs(self, names, positions):
+    def set_inputs(self, names, positions,background):
         self.inputs = {}
         for x in names:
             self.inputs[x] = 0
 
-        data_json = json.dumps(
-            {
-                "password":password,
-                "options":names,
-                "positions":positions
-            }
-        )
-        payload = {'json_payload': data_json}
-        r = requests.post("http://localhost:8080", data=payload)
+        data = {
+            "names":names,
+            "positions":positions,
+            "password":password,
+            "background":background
+        }
+    
+        header = {"Content-Type": "application/json"}
+        r = requests.post(server_set, json = data, headers=header)
 
         
 
@@ -39,31 +39,54 @@ class Inputs:
         if name in self.inputs:
             self.inputs[name] += 1
 
-    def server_com():
-        requests.get('https://github.com/inputs.json')
-        
+    def update_inputs(self):
+        resp = requests.get(url=server_get)
+        self.data = resp.json()
 
-def set_inputs(names,layout):
-    # Do something to set the inputs on the server end
-    pass
+    def get_inputs_1per(self):
+        buttons = {}
+        for i in self.data["users"]:
+            print(self.data["users"][i])
+            if self.data["users"][i] in buttons:
+                buttons[self.data["users"][i]] += 1
+            else:
+                buttons[self.data["users"][i]] = 1
+        return buttons
+
+    def get_top(self):
+        max = -1
+        current = ""
+        buts = self.get_inputs_1per()
+        print(buts)
+        for i in buts:
+            if buts[i] > max:
+                max = buts[i]
+                current = i
+        print(current)
+        return current
+
+    def get_inputs_sum(self):
+        return self.data["hits"]
 
 
-def get_inputs():
-    x = 4 # Number of buttons
-    sum = [0]*x
-    # Spoof inputs for now
-    n = 100 # 100 people
-    for i in range(100):
-        random.randint()
+def run():
+    while True:
+        a.update_inputs()
+        print(a.get_inputs_sum())
+        time.sleep(0.1)
 
 
+a = Inputs()
 
 
 if __name__ == "__main__":
+    getter = threading.Thread(target=run)
+    getter.start()
     screen_size = [640,480]
     pyray.set_config_flags(
         pyray.ConfigFlags.FLAG_VSYNC_HINT | 
         pyray.ConfigFlags.FLAG_VSYNC_HINT )
 
     pyray.init_window(*screen_size, "CubeWorld")
-    test.main(screen_size)
+    a.set_inputs(test.INPUTS, test.BUTTON_POS,test.PHONE_BACKGROUN)
+    test.main(screen_size, a)
