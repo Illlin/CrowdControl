@@ -37,19 +37,21 @@ class Timer():
 
 class Sprite():
     def __init__(self, ani_speed, texture, position, frames):
-        self.hidden = False
+        self.hidden = True
         self.ani_speed = ani_speed
         self.texture = texture
-        self.position = position
+        self.position = position[::]
         self.floatPosition = [float(position[0]), float(position[1])]
 
         self.current_frame = 0
         self.max_frame = frames
         self.time = 0
         self.load_texture()
-        self.goal = self.position
+        self.goal = self.position[::]
         self.move_speed = 0
         self.at_goal = self.position == self.goal
+        self.scale = 1
+        self.rotation = 0
 
     def hide(self):
         self.hidden = True
@@ -93,22 +95,28 @@ class Sprite():
         self.frameRec.x = self.current_frame*self.size[0]
 
     def set_pos(self, pos):
-        self.position = pos
+        self.position = pos[::]
 
     def set_pos_center(self, pos):
-        self.position = pos[0] - self.size[0]/2, pos[1] - self.size[1]/2
+        self.position = pos[0] - (self.size[0]*self.scale)/2, pos[1] - (self.size[1]*self.scale)/2
+
+    def set_goal_center(self, pos):
+        self.goal = pos[0] - (self.size[0]*self.scale)/2, pos[1] - (self.size[1]*self.scale)/2
 
     def draw(self):
+        dest = self.get_rect()
         if not self.hidden:
-            pyray.draw_texture_rec(
+            pyray.draw_texture_pro(
                 self.texture,
                 self.frameRec,
-                self.position,
+                dest,
+                (0,0),
+                self.rotation,
                 pyray.WHITE
             )
 
     def get_rect(self):
-        return pyray.Rectangle(*self.position,*self.size)
+        return pyray.Rectangle(*self.position,self.size[0]*self.scale, self.size[1]*self.scale)
 
     def get_collision(self, other):
         return pyray.get_collision_rec(self.get_rect(), other.get_rect())

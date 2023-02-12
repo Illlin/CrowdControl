@@ -4,7 +4,7 @@ from sprite import Sprite, Timer, DrawMode
 INPUTS = ["BUY", "SELL"]
 
 
-def main(screen_size): # Game stuff here
+def main(screen_size, inp): # Game stuff here
     # Init the sprite, Framerate, File location, Position, number of frames
     background = pyray.load_texture("PythonGame/Assets/blue_rectangle.png")
 

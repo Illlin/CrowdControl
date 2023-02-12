@@ -49,7 +49,7 @@ def main(screen_size): # Game stuff here
             
             # Start the game
             if intro_timer.done() and intro_timer.running:
-                # Set Sprite peramiters
+                # Set Sprite parameters
                 ball.move_speed = 50
                 intro_timer.stop()
                 main_timer.start()

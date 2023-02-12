@@ -1,11 +1,13 @@
 import pyray
 from sprite import Sprite, Timer
 import Doctor_Deflector
+import To_The_Moon
 import test
 import threading
 import requests
 import json
 import time
+import basic_pong
 
 password = "FishBiscuitsAreFish"
 
@@ -58,12 +60,10 @@ class Inputs:
         max = -1
         current = ""
         buts = self.get_inputs_1per()
-        print(buts)
         for i in buts:
             if buts[i] > max:
                 max = buts[i]
                 current = i
-        print(current)
         return current
 
     def get_inputs_sum(self):
@@ -73,7 +73,8 @@ class Inputs:
 def run():
     while True:
         a.update_inputs()
-        print(a.get_inputs_sum())
+        #print(a.get_inputs_sum())
+        #print(a.get_top())
         time.sleep(0.1)
 
 
@@ -89,7 +90,6 @@ if __name__ == "__main__":
         pyray.ConfigFlags.FLAG_VSYNC_HINT )
 
     pyray.init_window(*screen_size, "CubeWorld")
-    Doctor_Deflector.main(screen_size)
-    a.set_inputs(test.INPUTS, test.BUTTON_POS,test.PHONE_BACKGROUN)
-    test.main(screen_size, a)
+    a.set_inputs(Doctor_Deflector.INPUTS, test.BUTTON_POS, Doctor_Deflector.PHONE_BACKGROUN)
+    Doctor_Deflector.main(screen_size,a)
 
