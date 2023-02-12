@@ -17,11 +17,12 @@ class HTTPServerRequestHandler(BaseHTTPRequestHandler):
             request_data = json.loads(request_body)
             if request_data["password"] == password:
                 if "names" in request_data:
+                    global inps
                     inps = request_data
-                    for x in hits:
-                        del hits[x]
-                    for x in inps["names"]:
-                        hits[x] = 0
+                    global hits
+                    global users
+                    hits = {}
+                    users = {}
 
                     print("UPDATES INPS ----------------------")
                 print(request_data)
@@ -73,8 +74,10 @@ class HTTPServerRequestHandler(BaseHTTPRequestHandler):
             button = location[8:]
             button, user = button.split("/")
             users[user] = button
-
-            hits[button] += 1
+            if button in hits:
+                hits[button] += 1
+            else:
+                hits[button] = 1
 
             print(f"GOT BUTTON --- {button}")
             self.send_response(200)
