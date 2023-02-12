@@ -94,6 +94,7 @@ if __name__ == "__main__":
     pyray.init_window(*screen_size, "CubeWorld")
     pyray.init_audio_device()
     a.set_inputs(menu.INPUTS, test.BUTTON_POS, menu.PHONE_BACKGROUN)
+    pyray.toggle_fullscreen()
     menu.main(screen_size,a)
     while True:
         g = [1,2,3]

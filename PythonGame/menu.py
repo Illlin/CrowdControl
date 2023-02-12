@@ -49,8 +49,8 @@ def main(screen_size, inp): # Game stuff here
             else:
                 a = 0
             print(peeps)
-            pyray.draw_text(f"{a} People connected!",600,300,80,pyray.RED)
-            pyray.draw_text(f"http://34.142.66.132/",580,420,80,pyray.RED)
+            pyray.draw_text(f"{a} People connected!",600,300,80,pyray.BLACK)
+            pyray.draw_text(f"http://34.142.66.132/",580,420,80,pyray.BLACK)
             
             # Return to next Game
             if pyray.is_key_down(pyray.KeyboardKey.KEY_SPACE):
