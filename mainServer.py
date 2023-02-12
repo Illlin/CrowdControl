@@ -116,7 +116,7 @@ def run():
     print('starting server...')
 
     # Server settings
-    server_address = ('0.0.0.0', 5000)
+    server_address = ('0.0.0.0', 80)
     httpd = HTTPServer(server_address, HTTPServerRequestHandler)
     print('running server...')
     httpd.serve_forever()
