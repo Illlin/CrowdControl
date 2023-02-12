@@ -1,11 +1,7 @@
 import pyray
-<<<<<<< HEAD
 from sprite import Sprite, Timer
 import Doctor_Deflector
-=======
 import test
-
->>>>>>> 153d3dbeaa7c289a4af517afcc649dd68ce41265
 import threading
 import requests
 import json
@@ -87,15 +83,13 @@ a = Inputs()
 if __name__ == "__main__":
     getter = threading.Thread(target=run)
     getter.start()
-    screen_size = [640,480]
+    screen_size = [1920,1080]
     pyray.set_config_flags(
         pyray.ConfigFlags.FLAG_VSYNC_HINT | 
         pyray.ConfigFlags.FLAG_VSYNC_HINT )
 
     pyray.init_window(*screen_size, "CubeWorld")
-<<<<<<< HEAD
     Doctor_Deflector.main(screen_size)
-=======
     a.set_inputs(test.INPUTS, test.BUTTON_POS,test.PHONE_BACKGROUN)
     test.main(screen_size, a)
->>>>>>> 153d3dbeaa7c289a4af517afcc649dd68ce41265
+
