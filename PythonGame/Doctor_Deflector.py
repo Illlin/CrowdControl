@@ -1,17 +1,30 @@
 import pyray
 from sprite import Sprite, Timer, DrawMode
 import random
+import math
+import time
 
 INPUTS = ["LEFT", "RIGHT"]
 PHONE_BACKGROUN = "background.png"
 
 
 def main(screen_size, inp): # Game stuff here
+    music = pyray.load_music_stream("PythonGame/Assets/transition.wav")
+    music.looping = False
+
+    pyray.play_music_stream(music)
+
     # Init the sprite, Framerate, File location, Position, number of frames
-    background = pyray.load_texture("PythonGame/Assets/reception_bg.png")
+    background = pyray.load_texture("PythonGame/Assets/doctor_open_bg.png")
 
     man_right = Sprite(5, "PythonGame/Assets/man_right.png", [-100,-100],2)
     man_left = Sprite(5, "PythonGame/Assets/man_left.png", [-100,-100],2)
+
+    text = Sprite(5, "PythonGame/Assets/get_good_soon.png", [0,0],1)
+    text.scale = 0.5
+    text.offset = (text.size[0]*text.scale)*0.5,(text.size[1]*text.scale)*0.5
+    text.set_pos_center([screen_size[0]*0.83, 400])
+    text.show()
 
     apple = Sprite(5, "PythonGame/Assets/AppleSmall.png", [-100,-100],2)
     apple.scale = 0.5
@@ -20,15 +33,18 @@ def main(screen_size, inp): # Game stuff here
     doc_1 = Sprite(5, "PythonGame/Assets/DoctorSmall.png", [100,-100],2)
     doc_2 = Sprite(5, "PythonGame/Assets/DoctorSmall.png", [100,-100],2)
 
+    introDoctor = Sprite(5, "PythonGame/Assets/DoctorSmall.png", [100,-100],2)
+    introDoctor.scale = 0.01
+
     # Add all sprites to array for easy updating
     man_sprites = [man_left, man_right]
     doc_sprites = [doc_1, doc_2]
     
     # Timers are used instead of sleep
     # Control Timers
-    intro_timer = Timer(1)
+    intro_timer = Timer(4)
     main_timer = Timer(10)
-    end_timer = Timer(2)
+    end_timer = Timer(1)
 
     # Game Timers
     doctor_timer = Timer(2)
@@ -48,6 +64,7 @@ def main(screen_size, inp): # Game stuff here
 
         # This stuff happens while drawing
         with DrawMode():
+            pyray.update_music_stream(music)
             # Ignore this
             pyray.clear_background(pyray.BLACK)
             source = pyray.Rectangle(0, 0, 896,512)
@@ -55,13 +72,20 @@ def main(screen_size, inp): # Game stuff here
 
             # Draw the intro stuff
             if intro_timer.running:
-                for sprite in man_sprites:
-                    sprite.hide()
-        
-                pyray.draw_text("Keep the doctors at bay!",600,500,50,pyray.RED)
+                introDoctor.show()
+                text.show()
+                text.rotation = 10*math.sin(time.time()*2)
+                introDoctor.scale *= 1.025
+                introDoctor.set_pos_center([screen_size[0]*0.5, screen_size[1]*0.5])
+                pyray.draw_text("Keep the doctors at bay!",600,500,50,pyray.GOLD)
             
             # Start the game
             if intro_timer.done() and intro_timer.running:
+                introDoctor.hide()
+                text.hide()
+                background = pyray.load_texture("PythonGame/Assets/reception_bg.png")
+                music = pyray.load_music_stream("PythonGame/Assets/bluesy.wav")
+                pyray.play_music_stream(music)
                 # Set Sprite peramiters
                 intro_timer.stop()
                 main_timer.start()
@@ -124,9 +148,22 @@ def main(screen_size, inp): # Game stuff here
                     for man_sprite in man_sprites:
                         for doc_sprite in doc_sprites:
                             if man_sprite.get_collision(doc_sprite):
+                                man_left.tint = pyray.RED
+                                man_right.tint = pyray.RED
                                 win = False
 
-            # Ending
+
+            # Return to next Game
+            if end_timer.done():
+                pyray.stop_music_stream(music)
+                return win # return win or lose so music can play
+
+
+            # Each frame, Render and update each sprite and timers
+            [x.draw() for x in man_sprites + doc_sprites+ [apple] + [text]+ [introDoctor]]
+            [x.animate(delta) for x in man_sprites + doc_sprites+ [apple] + [introDoctor]+[text]]
+            [x.tick(delta) for x in timers]
+
             if main_timer.done():
                 main_timer.stop()
                 end_timer.start()
@@ -134,16 +171,7 @@ def main(screen_size, inp): # Game stuff here
                     sprite.hide()
 
                 if win:
-                    pyray.draw_text("You won a fish",650,500,80,pyray.RED)
+                    pyray.draw_text("You are safe... for now",650,500,80,pyray.RED)
                 else:
-                    pyray.draw_text("You lose a fish :(",600,500,80,pyray.RED)
-
-            # Return to next Game
-            if end_timer.done():
-                return win # return win or lose so music can play
-
-
-            # Each frame, Render and update each sprite and timers
-            [x.draw() for x in man_sprites + doc_sprites+ [apple]]
-            [x.animate(delta) for x in man_sprites + doc_sprites+ [apple]]
-            [x.tick(delta) for x in timers]
+                    introDoctor.show()
+                    pyray.draw_text("You need more apples",600,500,80,pyray.RED)

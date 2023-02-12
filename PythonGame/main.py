@@ -9,13 +9,14 @@ import requests
 import json
 import time
 import basic_pong
+import germ_journey
 import score
 import random
 
 password = "FishBiscuitsAreFish"
 
-server_get = "http://www.localhost:5000/get-buttons"
-server_set = "http://www.localhost:5000/"
+server_get = "http://34.142.66.132/get-buttons"
+server_set = "http://34.142.66.132/"
 
 class Inputs:
     def __init__(self):
@@ -91,14 +92,21 @@ if __name__ == "__main__":
         pyray.ConfigFlags.FLAG_VSYNC_HINT )
 
     pyray.init_window(*screen_size, "CubeWorld")
+    pyray.init_audio_device()
     a.set_inputs(menu.INPUTS, test.BUTTON_POS, menu.PHONE_BACKGROUN)
     menu.main(screen_size,a)
     while True:
-        b = random.choice([1,2])
-        if b == 1:
-            a.set_inputs(To_The_Moon.INPUTS, test.BUTTON_POS, To_The_Moon.PHONE_BACKGROUN)
-            c_score += To_The_Moon.main(screen_size,a)
-        if b == 2:
-            a.set_inputs(Doctor_Deflector.INPUTS, test.BUTTON_POS, Doctor_Deflector.PHONE_BACKGROUN)
-            c_score += Doctor_Deflector.main(screen_size,a)
-        score.main(screen_size,a,c_score)
+        g = [1,2,3]
+        random.shuffle(g)
+        for b in g:
+            if b == 1:
+                a.set_inputs(To_The_Moon.INPUTS, test.BUTTON_POS, To_The_Moon.PHONE_BACKGROUN)
+                won = To_The_Moon.main(screen_size,a)
+            if b == 2:
+                a.set_inputs(Doctor_Deflector.INPUTS, test.BUTTON_POS, Doctor_Deflector.PHONE_BACKGROUN)
+                won= Doctor_Deflector.main(screen_size,a)
+            if b == 3:
+                a.set_inputs(germ_journey.INPUTS, test.BUTTON_POS, germ_journey.PHONE_BACKGROUN)
+                won= germ_journey.main(screen_size,a)
+            c_score += won
+            score.main(screen_size,a,c_score, won)

@@ -52,6 +52,7 @@ class Sprite():
         self.at_goal = self.position == self.goal
         self.scale = 1
         self.rotation = 0
+        self.tint = pyray.WHITE
 
     def hide(self):
         self.hidden = True
@@ -112,7 +113,7 @@ class Sprite():
                 dest,
                 self.offset,
                 self.rotation,
-                pyray.WHITE
+                self.tint
             )
 
     def get_rect(self):

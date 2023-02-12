@@ -5,15 +5,23 @@ INPUTS = []
 PHONE_BACKGROUN = "background.png"
 
 
-def main(screen_size, inp, score): # Game stuff here
+def main(screen_size, inp, score, won): # Game stuff here
     # Init the sprite, Framerate, File location, Position, number of frames
     background = pyray.load_texture("PythonGame/Assets/background.png")
+    if won:
+        music = pyray.load_music_stream("PythonGame/Assets/win.wav")
+    else:
+        music = pyray.load_music_stream("PythonGame/Assets/Lose.wav")
+
+    music.looping = False
+
+    pyray.play_music_stream(music)
 
     bg = Sprite(5, "PythonGame/Assets/pinwheel_bg.png", [screen_size[0]*0.7,screen_size[1]*0.7],1)
     bg.scale = 5
     bg.offset = (bg.size[0]*bg.scale)*0.5,(bg.size[1]*bg.scale)*0.5
     
-    score_timer = Timer(2)
+    score_timer = Timer(4)
     score_timer.start()
 
     # Add all sprites to array for easy updating
@@ -26,6 +34,7 @@ def main(screen_size, inp, score): # Game stuff here
 
         # This stuff happens while drawing
         with DrawMode():
+            pyray.update_music_stream(music)
             score_timer.tick(delta)
             bg.rotation += 0.5
             bg.show()
@@ -44,6 +53,7 @@ def main(screen_size, inp, score): # Game stuff here
             
             # Return to next Game
             if pyray.is_key_down(pyray.KeyboardKey.KEY_SPACE) or score_timer.done():
+                pyray.stop_music_stream(music)
                 return False
 
 
