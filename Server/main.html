@@ -24,27 +24,59 @@
         border-radius: 5px;
         cursor: pointer;
       }
+
+      #username-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+      }
+
+      #username-form input[type="text"] {
+        margin-bottom: 10px;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid gray;
+      }
+
+      #username-form input[type="submit"] {
+        padding: 10px 20px;
+        background-color: lightgray;
+        border-radius: 5px;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
-    <div class="container">
+    <div id="username-form">
+      <label for="username">Username:</label>
+      <input type="text" id="username" maxlength="10">
+      <input type="submit" value="Submit" id="submit-username">
+    </div>
+    <div class="container" id="buttons-container" style="display: none;">
       <div id="buttons"></div>
     </div>
     <script>
-      async function fetchData() {
-        const response = await fetch("http://localhost:5000/get-inputs");
+      async function fetchData(username) {
+        const response = await fetch(
+          `http://localhost:5000/get-inputs`
+        );
         const data = await response.json();
         return data;
       }
 
       async function sendRequest(name) {
-        const response = await fetch(`http://localhost:5000/buttons/${name}`);
+        const username = usernameInput.value;
+        const response = await fetch(`http://localhost:5000/buttons/${name}/${username}`);
         const data = await response.json();
         console.log(data);
       }
 
-      function displayButtons() {
-        fetchData().then((data) => {
+      function displayButtons(username) {
+        fetchData(username).then((data) => {
           const buttonsContainer = document.querySelector("#buttons");
           buttonsContainer.innerHTML = "";
           data.names.forEach((name) => {
@@ -61,8 +93,24 @@
         });
       }
 
-      displayButtons();
-      setInterval(displayButtons, 2000);
+      const submitUsernameButton = document.querySelector("#submit-username");
+      const usernameInput = document.querySelector("#username");
+      submitUsernameButton.addEventListener("click", () => {
+        const username = usernameInput.value;
+        if (!/^[a-zA-Z0-9]+$/.test(username)) {
+            alert("Username can only contain alphanumeric characters.");
+            return;
+        }
+
+        displayButtons(username);
+        document.querySelector("#username-form").style.display = "none";
+        document.querySelector("#buttons-container").style.display = "flex";
+      });
+
+      setInterval(() => {
+        const username = usernameInput.value;
+        displayButtons(username);
+      }, 2000);
     </script>
   </body>
 </html>
